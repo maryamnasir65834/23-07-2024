@@ -1,0 +1,185 @@
+
+//Have the function SimplePassword(str) take the str parameter being passed and determine if it passes as a valid paqssword that follows the list of constraints:
+// 1. it must have a capital letter.
+//2. it must contain atleast one number
+//3. it must contain a punctuation mark or methametical symbol
+// 4. it cannot have the word password in the string
+// 5. it must be longer then 7 characters and shorter than 31 characters.
+
+//if all above constraints are met within the string, program should return the string true, otherwise false.
+
+using System;
+using System.Linq;
+
+class Program
+{
+    static bool SimplePassword(string str)
+    {
+                                                    //Checks Length between 8 and 30 characters
+        if (str.Length < 8 || str.Length > 30)
+            return false;
+
+                                                    // Cannot contain the word "password" (case insensitive)
+        if (str.ToLower().Contains("password"))
+            return false;
+
+                                                    // Must have at least one capital letter
+        if (!HavingUppercaseLetter(str))
+            return false;
+
+                                                    // Must contain at least one number
+        if (!HavingDigits(str))
+            return false;
+
+                                                    // Must contain at least one punctuation or mathematical symbol
+        if (!HavingPunctuationMarkOrSymbol(str))
+            return false;
+
+
+        return true;
+    }
+    // Function for constraint no 1
+    static bool HavingUppercaseLetter(string str)
+    {
+        foreach (char c in str)
+        {
+            if (char.IsLetter(c) && char.IsUpper(c))
+                return true;
+        }
+        return false;
+    }
+
+    //Function for constarint no 2
+    static bool HavingDigits(string str)
+    {
+        return str.Any(char.IsDigit);
+    }
+    // Function constraint no 3
+    static bool HavingPunctuationMarkOrSymbol(string str)
+    {
+        foreach (char c in str)
+        {
+            if (char.IsPunctuation(c) || char.IsSymbol(c))
+                return true;
+        }
+        return false;
+    }
+
+    static void Main()
+    {
+
+        Console.WriteLine(SimplePassword("ValidPa$$w0rd"));
+        Console.WriteLine(SimplePassword("passWord123!!!!"));
+        Console.WriteLine(SimplePassword("turkey90AAA="));
+      
+    }
+}
+
+// Have the function Caesar(str,num) take the str parameter and perform a ceaser cipher shift on it by using the num parameter as the shifting number. A caeser Cipher works by shifting each letter in the string N places in the alphabet(in this case N will be num). Punctuation, spaces, and capitalization should remain intact.
+
+using System;
+
+class Program
+{
+    static string Caesar(string str, int num)
+    {
+       
+        num = num % 26;   // For negative no's
+        if (num < 0)
+            num = num + 26;
+        
+
+        char[] characters = str.ToCharArray();
+
+        for (int i = 0; i < characters.Length; i++)
+        {
+            char c = characters[i];
+
+            if (char.IsLetter(c))
+            {
+                        // THIS NEW CHARCTER WILL AGAIN SET POSITION//
+                char NewCharacter = char.IsLower(c) ? 'a' : 'A';
+                characters[i] = (char)(((c - NewCharacter + num) % 26) + NewCharacter);
+            }
+            
+        }
+
+        return new string(characters);
+    }
+
+    static void Main()
+    {
+      
+        string input = "Hello";
+        int shift = 4;
+        string encrypted = Caesar(input, shift);
+        string decrypted = Caesar(encrypted, -shift);
+
+    
+        Console.WriteLine("Encrypted (shift = {0}): {1}", shift, encrypted);
+    
+    }
+}
+
+
+// Have the function ArrayCouples(arr) take the arr parameter being passed wihich will be an array of an even number of poditive integers, and determine if each pair of integers,[k, k+1], [k+2 , k+3], etc in the array has the corresponding reversed pair somewhere else in te array. For example if arr is [4,5,1,4,5,4,4,1] then your program should  output the string yes bcz the first pair 4,5 hs the reversed pair 5,4 in the end array, and the next pair, 1,4 has the reversed pair 4,1 in the array as well. But if te array doesnt contain all pairs with their reversed pair, then program should output the string of integer pair that are incorrect, in the order that they appear in the array. 
+
+using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static string ArrayCouples(int[] arr)
+    {
+        List<(int, int)> NewPairs = new List<(int, int)>();
+
+        
+        for (int i = 0; i < arr.Length - 1; i += 2)   // making pairs of i j from the array
+        {
+            NewPairs.Add((arr[i], arr[i + 1]));
+        }
+
+        
+        for (int i = 0; i < NewPairs.Count; i++)
+        {
+            (int firstelement, int secondelement) = NewPairs[i];
+
+            bool ReversedPair = false;  // initializing the Reversed pair not found
+
+            for (int j = 0; j < NewPairs.Count; j++)
+            {
+                if (i != j)
+                {
+                    (int reverseFirst, int reverseSecond) = NewPairs[j];
+                    if (firstelement == reverseSecond && secondelement == reverseFirst)
+                    {
+                        ReversedPair = true;
+                        break;
+                    }
+                }
+
+            }
+
+            if (!ReversedPair)
+            {
+                return $"({firstelement},{secondelement})";
+            }
+        }
+
+        return "yes";
+    }
+
+    static void Main()
+    {
+      
+        int[] arr1 = { 4, 5, 1, 4, 5, 4, 4, 1 };
+        int[] arr2 = { 6,2,2,6,5,14,14,1 };
+        int[] arr3 = {2,1,1,2,3,3 };
+        int[] arr4 = { 5,4,6,7,7,6,4,5 };
+
+        Console.WriteLine(ArrayCouples(arr1)); 
+        Console.WriteLine(ArrayCouples(arr2)); 
+        Console.WriteLine(ArrayCouples(arr3));
+        Console.WriteLine(ArrayCouples(arr4));
+    }
+}
